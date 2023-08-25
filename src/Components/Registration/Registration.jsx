@@ -1,5 +1,10 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { getAuth, createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import app from '../Hook/firebaseConfig';
+
+
+const auth = getAuth(app);
 
 const Registration = () => {
     const [ name, setName ] = useState('');
@@ -34,6 +39,38 @@ const Registration = () => {
         setError('');
         setPassword(password);
     }
+    const handleregistration = e =>{
+        e.preventDefault();
+        if( name, email, password ){
+            createUserWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    // Signed in 
+                    const user = userCredential.user;
+                    updateName();
+                    setError('');
+                    console.log(user);
+                    // ...
+                })
+            .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                setError(errorMessage);
+                // ..
+            });
+        }
+    }
+
+    const updateName = () =>{
+        updateProfile(auth.currentUser, {
+            displayName: name,
+          }).then(() => {
+            // Profile updated!
+            // ...
+          }).catch((error) => {
+            // An error occurred
+            // ...
+          });
+    }
     return (
         <div className='container'>
             <form className='w-50 justify-content-center'>
@@ -50,7 +87,7 @@ const Registration = () => {
                     <label htmlFor="exampleInputPassword1">Password</label>
                     <input onBlur={ handlePassword } type="password" className="form-control" id="exampleInputPassword1" placeholder="Password" />
                 </div>
-                <button type="submit" className="btn btn-primary mt-3">Submit</button>
+                <button onClick={ handleregistration } type="submit" className="btn btn-primary mt-3">Submit</button>
                 <p>Already have account? Please <Link to='/login'>Login</Link></p>
             </form>
         </div>
