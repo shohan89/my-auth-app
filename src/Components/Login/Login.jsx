@@ -2,8 +2,15 @@ import React from 'react';
 
 const Login = () => {
     return (
-        <div>
-            <h2>This is login</h2>
+        <div className='container'>
+            <div className="row">
+                <div className="col">
+
+                </div>
+                <div className="col">
+                    
+                </div>
+            </div>
         </div>
     );
 };
