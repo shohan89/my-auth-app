@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { getAuth, createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, updateProfile, sendEmailVerification } from "firebase/auth";
 import app from '../Hook/firebaseConfig';
 
 
@@ -11,6 +11,7 @@ const Registration = () => {
     const [ email, setEmail ] = useState('');
     const [ password, setPassword ] = useState('');
     const [ error, setError ] = useState('');
+    const [ isDisabled, setIsDesabled ] = useState( true );
 
     const handleName = e => {
         e.preventDefault(); // To handle form default behave
@@ -47,6 +48,7 @@ const Registration = () => {
                     // Signed in 
                     const user = userCredential.user;
                     updateName();
+                    verifyEmail();
                     setError('');
                     console.log(user);
                     // ...
@@ -71,6 +73,13 @@ const Registration = () => {
             // ...
           });
     }
+    const verifyEmail = () =>{
+        sendEmailVerification(auth.currentUser)
+            .then(() => {
+                // Email verification sent!
+                // ...
+            });
+    }
     return (
         <div className='container'>
             <form className='w-50 justify-content-center'>
@@ -87,7 +96,11 @@ const Registration = () => {
                     <label htmlFor="exampleInputPassword1">Password</label>
                     <input onBlur={ handlePassword } type="password" className="form-control" id="exampleInputPassword1" placeholder="Password" />
                 </div>
-                <button onClick={ handleregistration } type="submit" className="btn btn-primary mt-3">Submit</button>
+                <div className="form-check">
+                <input onClick={()=>setIsDesabled(!isDisabled)} type="checkbox" className="form-check-input" id="exampleCheck1" />
+                <label className="form-check-label" htmlFor="exampleCheck1">Accept all terms & conditions</label>
+            </div>
+                <button onClick={ handleregistration } disabled={ isDisabled } type="submit" className="btn btn-primary mt-3">Register</button>
                 <p>Already have account? Please <Link to='/login'>Login</Link></p>
             </form>
         </div>
